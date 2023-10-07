@@ -2,11 +2,14 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const db = require("./db/dbConnection");
+const cors = require("cors");
+
 app.use(express.json());
 const PORT = process.env.PORT || 3000;
 const UI_URL = process.env.UI_URL;
-const authRoutes = require('./routes/authRoutes')
-const chatRoutes=require("./routes/chatRoutes")
+app.use(cors({ origin: `${UI_URL}` }));
+const authRoutes = require("./routes/authRoutes");
+const chatRoutes = require("./routes/chatRoutes");
 const messageRoutes = require("./routes/messageRoutes");
 const path = require("path");
 app.use("/api/user", authRoutes);
@@ -14,7 +17,6 @@ app.use("/api/chat", chatRoutes);
 app.use("/api/message", messageRoutes);
 
 //Deployment
-
 
 // const __dirname1 = path.resolve();
 
@@ -29,10 +31,9 @@ app.use("/api/message", messageRoutes);
 
 //Deployment
 
-const server=app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`server is running on port ${PORT}`);
 });
-
 
 const io = require("socket.io")(server, {
   pingTimeout: 60000,
